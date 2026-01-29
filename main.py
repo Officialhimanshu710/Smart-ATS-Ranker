@@ -51,7 +51,7 @@ def main():
     st.title("🚀 Smart ATS Resume Ranker")
     st.subheader("Optimize your resume for the Application Tracking System")
     
-    # Input Section
+    
     col1, col2 = st.columns(2)
     
     with col1:
@@ -69,22 +69,16 @@ def main():
                 
                 try:
                     parsed_response = json.loads(response)
-                    
-                    # --- Result Section ---
-                    st.divider() # Creates a nice horizontal line
-                    
-                    # Create 3 columns: Score, Summary, Keywords
+                    st.divider()
                     c1, c2 = st.columns([1, 2])
                     
                     with c1:
-                        # 1. The Score Card
                         match_str = parsed_response["JD Match"].replace("%", "")
                         match_score = int(match_str)
                         
                         st.metric("ATS Match Score", f"{match_score}%")
                         st.progress(match_score / 100)
                         
-                        # Simple logic for color feedback
                         if match_score >= 80:
                             st.success("Great Match!")
                         elif match_score >= 50:
@@ -93,15 +87,11 @@ def main():
                             st.error("Low Match")
 
                     with c2:
-                        # 2. The Summary (Native 'Info' box looks like a card)
                         st.subheader("Profile Summary")
                         st.info(parsed_response["Profile Summary"])
                     
-                    # 3. Missing Keywords (Using native Markdown for "Tag" look)
                     st.subheader("Missing Critical Keywords")
                     if parsed_response["MissingKeywords"]:
-                        # Convert list ['Python', 'SQL'] -> string "`Python`  `SQL`"
-                        # This creates the grey pill look natively
                         formatted_keywords = "  ".join([f"`{kw}`" for kw in parsed_response["MissingKeywords"]])
                         st.write(formatted_keywords)
                         st.caption("Tip: Add these keywords to your resume to boost your score.")
@@ -109,7 +99,6 @@ def main():
                         st.balloons()
                         st.success("✅ No critical keywords missing!")
 
-                    # Raw Data (Hidden inside an expander)
                     with st.expander("View Full Analysis Data"):
                         st.json(parsed_response)
 
